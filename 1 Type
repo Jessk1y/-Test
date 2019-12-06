@@ -1,0 +1,62 @@
+import vk_api
+from vk_api.longpoll import VkLongPoll, VkEventType
+import re
+import requests, random
+session = requests.Session()
+login, password = '89536824833', '2005den05'
+vk_session = vk_api.VkApi(login, password)
+try:
+    vk_session.auth(token_only=True)
+except vk_api.AuthError as error_msg:
+    print(error_msg)
+
+
+def write_msg(user_id, message):
+    vk.method('messages.send', {'user_id': user_id, 'message': message,'random_id': 0})
+
+
+def check(request=''):
+    if request == "привет":
+        write_msg(event.user_id, "Хай")
+    elif request == "пока":
+        write_msg(event.user_id, "Пока((")
+    elif request == "дима":
+        return True
+
+def get_random_id():
+    return random.getrandbits(31) * random.choice([-1, 1])
+
+# API-ключ созданный ранее
+token = "918b6ed918b8ae485bb21f7baa8ac4de1f9b8fb8e7aef7a8748638eeaa51d5d6fe72d6a76a47a935c6030"
+
+# Авторизуемся как сообщество
+vk = vk_api.VkApi(token=token)
+
+# Работа с сообщениями
+longpoll = VkLongPoll(vk)
+line = r"[\s\+-\/\*]"
+# Основной цикл
+for event in longpoll.listen():
+
+    # Если пришло новое сообщение
+    if event.type == VkEventType.MESSAGE_NEW:
+
+        # Если оно имеет метку для меня( то есть бота)
+        if event.to_me:
+
+            # Сообщение от пользователя
+            request = event.text
+            flag = check(request)
+            # Каменная логика ответа
+            result = re.split(line, request)
+            znak = re.findall(line, request)
+            if len(result) > 0:
+                if len(znak) > 0 and znak[0] == "+":
+                    write_msg(event.user_id, str(float(result[0]) + float(result[1])))
+                else:
+                    write_msg(event.user_id, "Не разобрал")
+            else:
+                write_msg(event.user_id, "Не разобрал")
+#
+
+
