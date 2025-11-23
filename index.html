@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Многофункциональный калькулятор</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Многофункциональный калькулятор</h1>
+        
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="calculator">Калькулятор</button>
+            <button class="tab-btn" data-tab="converter">Конвертер</button>
+            <button class="tab-btn" data-tab="equations">Уравнения</button>
+            <button class="tab-btn" data-tab="history">История</button>
+            <button class="tab-btn" data-tab="settings">Настройки</button>
+        </div>
+        
+        <!-- Калькулятор -->
+        <div id="calculator" class="tab-content active">
+            <input type="text" id="display" readonly>
+            <div class="buttons">
+                <button class="function-btn" onclick="appendToDisplay('sin(')">sin</button>
+                <button class="function-btn" onclick="appendToDisplay('cos(')">cos</button>
+                <button class="function-btn" onclick="appendToDisplay('tan(')">tan</button>
+                <button class="function-btn" onclick="appendToDisplay('log(')">log</button>
+                <button class="function-btn" onclick="appendToDisplay('ln(')">ln</button>
+                <button class="function-btn" onclick="appendToDisplay('sqrt(')">√</button>
+                <button class="function-btn" onclick="appendToDisplay('^')">x^y</button>
+                <button class="function-btn" onclick="appendToDisplay('pi')">π</button>
+                <button class="function-btn" onclick="appendToDisplay('e')">e</button>
+                <button class="function-btn" onclick="appendToDisplay('(')">(</button>
+                <button class="function-btn" onclick="appendToDisplay(')')">)</button>
+                <button class="operator-btn" onclick="clearDisplay()">C</button>
+                <button class="number-btn" onclick="appendToDisplay('7')">7</button>
+                <button class="number-btn" onclick="appendToDisplay('8')">8</button>
+                <button class="number-btn" onclick="appendToDisplay('9')">9</button>
+                <button class="operator-btn" onclick="appendToDisplay('/')">/</button>
+                <button class="number-btn" onclick="appendToDisplay('4')">4</button>
+                <button class="number-btn" onclick="appendToDisplay('5')">5</button>
+                <button class="number-btn" onclick="appendToDisplay('6')">6</button>
+                <button class="operator-btn" onclick="appendToDisplay('*')">*</button>
+                <button class="number-btn" onclick="appendToDisplay('1')">1</button>
+                <button class="number-btn" onclick="appendToDisplay('2')">2</button>
+                <button class="number-btn" onclick="appendToDisplay('3')">3</button>
+                <button class="operator-btn" onclick="appendToDisplay('-')">-</button>
+                <button class="number-btn" onclick="appendToDisplay('0')">0</button>
+                <button class="number-btn" onclick="appendToDisplay('.')">.</button>
+                <button class="operator-btn" onclick="calculate()">=</button>
+                <button class="operator-btn" onclick="appendToDisplay('+')">+</button>
+            </div>
+        </div>
+        
+        <!-- Конвертер -->
+        <div id="converter" class="tab-content">
+            <div class="converter-section">
+                <label for="converter-type">Тип конвертации:</label>
+                <select id="converter-type">
+                    <option value="length">Длина</option>
+                    <option value="weight">Масса</option>
+                    <option value="temperature">Температура</option>
+                </select>
+            </div>
+            
+            <div class="converter-section">
+                <label for="from-unit">Из:</label>
+                <select id="from-unit">
+                    <!-- Заполняется динамически -->
+                </select>
+                <input type="number" id="from-value" placeholder="Введите значение">
+            </div>
+            
+            <div class="converter-section">
+                <label for="to-unit">В:</label>
+                <select id="to-unit">
+                    <!-- Заполняется динамически -->
+                </select>
+                <input type="text" id="to-value" readonly placeholder="Результат">
+            </div>
+            
+            <button class="convert-btn" onclick="convertUnits()">Конвертировать</button>
+            <button class="swap-btn" onclick="swapUnits()">Поменять местами</button>
+        </div>
+        
+        <!-- Уравнения -->
+        <div id="equations" class="tab-content">
+            <div class="equation-section">
+                <h3>Решение линейных уравнений (ax + b = 0)</h3>
+                <div class="equation-inputs">
+                    <input type="number" id="linear-a" placeholder="a">
+                    <span>x +</span>
+                    <input type="number" id="linear-b" placeholder="b">
+                    <span>= 0</span>
+                </div>
+                <button onclick="solveLinear()">Решить</button>
+                <div id="linear-result" class="result"></div>
+            </div>
+            
+            <div class="equation-section">
+                <h3>Решение квадратных уравнений (ax² + bx + c = 0)</h3>
+                <div class="equation-inputs">
+                    <input type="number" id="quad-a" placeholder="a">
+                    <span>x² +</span>
+                    <input type="number" id="quad-b" placeholder="b">
+                    <span>x +</span>
+                    <input type="number" id="quad-c" placeholder="c">
+                    <span>= 0</span>
+                </div>
+                <button onclick="solveQuadratic()">Решить</button>
+                <div id="quad-result" class="result"></div>
+            </div>
+        </div>
+        
+        <!-- История -->
+        <div id="history" class="tab-content">
+            <h3>История вычислений</h3>
+            <div id="history-list"></div>
+            <div class="history-actions">
+                <button onclick="clearHistory()">Очистить историю</button>
+                <button onclick="exportHistory('json')">Экспорт JSON</button>
+                <button onclick="exportHistory('csv')">Экспорт CSV</button>
+            </div>
+        </div>
+        
+        <!-- Настройки -->
+        <div id="settings" class="tab-content">
+            <div class="setting-item">
+                <label for="theme-select">Тема:</label>
+                <select id="theme-select">
+                    <option value="light">Светлая</option>
+                    <option value="dark">Темная</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label for="font-size">Размер шрифта:</label>
+                <input type="range" id="font-size" min="12" max="24" value="16">
+                <span id="font-size-value">16px</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="language">Язык:</label>
+                <select id="language">
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
